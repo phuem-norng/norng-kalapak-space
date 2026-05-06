@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 nuxt dev",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 nuxt build",
-    "generate": "cross-env NODE_OPTIONS=--max-old-space-size=4096 nuxt generate",
-    "preview": "cross-env NODE_OPTIONS=--max-old-space-size=4096 nuxt preview"
+    "dev": "NODE_OPTIONS=--max-old-space-size=4096 nuxt dev",
+    "build": "NODE_OPTIONS=--max-old-space-size=4096 nuxt build",
+    "generate": "NODE_OPTIONS=--max-old-space-size=4096 nuxt generate",
+    "preview": "NODE_OPTIONS=--max-old-space-size=4096 nuxt preview"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.9.0",
