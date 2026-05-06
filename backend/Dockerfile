@@ -4,7 +4,7 @@ FROM php:8.3-fpm-alpine
 RUN apk add --no-cache \
     git curl zip unzip libpng-dev libjpeg-turbo-dev freetype-dev \
     libzip-dev icu-dev postgresql-dev oniguruma-dev \
-    nodejs npm postgresql-client
+    postgresql-client
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
