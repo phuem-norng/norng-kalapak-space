@@ -1,14 +1,21 @@
 # =====================================================
-# Render Blueprint — Kalapak Code Team Website
+# Render Blueprint — Backend Only (Render + Neon + Vercel Frontend)
 # =====================================================
-# Deploy: Go to https://render.com → New → Blueprint
-# Connect your GitHub repo and Render will auto-detect this file.
+# Deploy: https://render.com -> New -> Blueprint
 #
-# After first deploy, update these in the Render dashboard:
-#   Backend → APP_URL = https://kalapak-backend.onrender.com
-#   Backend → FRONTEND_URL = https://kalapak-frontend.onrender.com
-#   Backend → SANCTUM_STATEFUL_DOMAINS = kalapak-frontend.onrender.com
-#   Frontend → BACKEND_URL = https://kalapak-backend.onrender.com
+# This blueprint deploys only Laravel backend on Render.
+# Frontend is deployed separately on Vercel.
+#
+# Required manual env vars in Render backend service:
+#   APP_URL=https://<your-backend>.onrender.com
+#   FRONTEND_URL=https://<your-frontend>.vercel.app
+#   SANCTUM_STATEFUL_DOMAINS=<your-frontend>.vercel.app
+#   DB_HOST=<from Neon>
+#   DB_PORT=5432
+#   DB_DATABASE=<from Neon>
+#   DB_USERNAME=<from Neon>
+#   DB_PASSWORD=<from Neon>
+#   DB_SSLMODE=require
 # =====================================================
 
 services:
@@ -31,35 +38,27 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_URL
-        value: https://kalapak-backend.onrender.com
+        sync: false
       - key: FRONTEND_URL
-        value: https://kalapak-frontend.onrender.com
+        sync: false
       - key: LOG_CHANNEL
         value: stderr
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        fromDatabase:
-          name: kalapak-db
-          property: host
+        sync: false
       - key: DB_PORT
-        fromDatabase:
-          name: kalapak-db
-          property: port
+        value: "5432"
       - key: DB_DATABASE
-        fromDatabase:
-          name: kalapak-db
-          property: database
+        sync: false
       - key: DB_USERNAME
-        fromDatabase:
-          name: kalapak-db
-          property: user
+        sync: false
       - key: DB_PASSWORD
-        fromDatabase:
-          name: kalapak-db
-          property: password
+        sync: false
+      - key: DB_SSLMODE
+        value: require
       - key: SANCTUM_STATEFUL_DOMAINS
-        value: kalapak-frontend.onrender.com
+        sync: false
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_DRIVER
@@ -123,27 +122,3 @@ services:
         sync: false
       - key: SUPABASE_REGION
         sync: false
-
-  # -------------------------------------------------
-  # Frontend — Vue 3 + Nginx (production build)
-  # -------------------------------------------------
-  - type: web
-    name: kalapak-frontend
-    runtime: docker
-    dockerfilePath: ./frontend/Dockerfile
-    dockerContext: ./frontend
-    plan: free
-    envVars:
-      - key: NUXT_PUBLIC_API_URL
-        value: https://kalapak-backend.onrender.com/api
-      - key: NUXT_PUBLIC_SITE_URL
-        value: https://kalapak-frontend.onrender.com
-
-# -------------------------------------------------
-# PostgreSQL Database
-# -------------------------------------------------
-databases:
-  - name: kalapak-db
-    plan: free
-    databaseName: kalapak_db
-    user: kalapak_user
