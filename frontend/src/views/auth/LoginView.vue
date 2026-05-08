@@ -161,11 +161,13 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useRuntimeConfig } from '#app'
 import VueTurnstile from 'vue-turnstile'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const runtimeConfig = useRuntimeConfig()
 
 const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || ''
 const turnstileToken = ref('')
@@ -174,7 +176,7 @@ const error = ref('')
 const showPassword = ref(false)
 
 function loginWithGoogle() {
-  const backendUrl = (import.meta.env.VITE_API_URL || import.meta.env.NUXT_PUBLIC_API_URL || '').replace(/\/api\/?$/, '')
+  const backendUrl = (runtimeConfig.public.apiUrl || '').replace(/\/api\/?$/, '')
   if (!backendUrl) {
     error.value = 'Backend URL is not configured.'
     return
@@ -183,7 +185,7 @@ function loginWithGoogle() {
 }
 
 function loginWithGithub() {
-  const backendUrl = (import.meta.env.VITE_API_URL || import.meta.env.NUXT_PUBLIC_API_URL || '').replace(/\/api\/?$/, '')
+  const backendUrl = (runtimeConfig.public.apiUrl || '').replace(/\/api\/?$/, '')
   if (!backendUrl) {
     error.value = 'Backend URL is not configured.'
     return
