@@ -241,12 +241,20 @@ const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || ''
 const turnstileToken = ref('')
 
 function loginWithGoogle() {
-  const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://kalapakspace-backends.onrender.com'
+  const backendUrl = (import.meta.env.VITE_API_URL || import.meta.env.NUXT_PUBLIC_API_URL || '').replace(/\/api\/?$/, '')
+  if (!backendUrl) {
+    error.value = 'Backend URL is not configured.'
+    return
+  }
   window.location.href = `${backendUrl}/auth/google/redirect`
 }
 
 function loginWithGithub() {
-  const backendUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://kalapakspace-backends.onrender.com'
+  const backendUrl = (import.meta.env.VITE_API_URL || import.meta.env.NUXT_PUBLIC_API_URL || '').replace(/\/api\/?$/, '')
+  if (!backendUrl) {
+    error.value = 'Backend URL is not configured.'
+    return
+  }
   window.location.href = `${backendUrl}/auth/github/redirect`
 }
 

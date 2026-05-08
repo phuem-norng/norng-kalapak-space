@@ -12,6 +12,11 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialAuthController extends Controller
 {
+    private function frontendUrl(): string
+    {
+        return rtrim(env('FRONTEND_URL', 'http://localhost:3000'), '/');
+    }
+
     public function redirectToGoogle(): RedirectResponse
     {
         return Socialite::driver('google')->stateless()->redirect();
@@ -22,7 +27,7 @@ class SocialAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
         } catch (\Exception $e) {
-            $frontendUrl = env('FRONTEND_URL', 'https://kalapak-team.space');
+            $frontendUrl = $this->frontendUrl();
             return redirect($frontendUrl . '/auth/login?error=google_auth_failed');
         }
 
@@ -53,7 +58,7 @@ class SocialAuthController extends Controller
         }
 
         $token = $user->createToken('auth-token')->plainTextToken;
-        $frontendUrl = env('FRONTEND_URL', 'https://kalapak-team.space');
+        $frontendUrl = $this->frontendUrl();
 
         return redirect($frontendUrl . '/auth/google/callback?token=' . $token);
     }
@@ -68,7 +73,7 @@ class SocialAuthController extends Controller
         try {
             $githubUser = Socialite::driver('github')->stateless()->user();
         } catch (\Exception $e) {
-            $frontendUrl = env('FRONTEND_URL', 'https://kalapak-team.space');
+            $frontendUrl = $this->frontendUrl();
             return redirect($frontendUrl . '/auth/login?error=github_auth_failed');
         }
 
@@ -96,7 +101,7 @@ class SocialAuthController extends Controller
         }
 
         $token = $user->createToken('auth-token')->plainTextToken;
-        $frontendUrl = env('FRONTEND_URL', 'https://kalapak-team.space');
+        $frontendUrl = $this->frontendUrl();
 
         return redirect($frontendUrl . '/auth/github/callback?token=' . $token);
     }
