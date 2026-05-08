@@ -1,21 +1,19 @@
 # =====================================================
-# Render Blueprint — Backend Only (Render + Neon + Vercel Frontend)
+# Render Blueprint — Frontend + Backend (Render) + Neon DB
 # =====================================================
 # Deploy: https://render.com -> New -> Blueprint
 #
-# This blueprint deploys only Laravel backend on Render.
-# Frontend is deployed separately on Vercel.
+# This blueprint deploys both:
+#   - Laravel backend on Render
+#   - Nuxt frontend on Render
+# Database remains on Neon (manual DB_* env vars).
 #
-# Required manual env vars in Render backend service:
-#   APP_URL=https://<your-backend>.onrender.com
-#   FRONTEND_URL=https://<your-frontend>.vercel.app
-#   SANCTUM_STATEFUL_DOMAINS=<your-frontend>.vercel.app
-#   DB_HOST=<from Neon>
-#   DB_PORT=5432
-#   DB_DATABASE=<from Neon>
-#   DB_USERNAME=<from Neon>
-#   DB_PASSWORD=<from Neon>
-#   DB_SSLMODE=require
+# Required manual env vars:
+#   Backend APP_URL=https://<your-backend>.onrender.com
+#   Backend FRONTEND_URL=https://<your-frontend>.onrender.com
+#   Backend SANCTUM_STATEFUL_DOMAINS=<your-frontend>.onrender.com
+#   Backend DB_HOST/DB_DATABASE/DB_USERNAME/DB_PASSWORD from Neon
+#   Frontend NUXT_PUBLIC_API_URL=https://<your-backend>.onrender.com/api
 # =====================================================
 
 services:
@@ -122,3 +120,30 @@ services:
         sync: false
       - key: SUPABASE_REGION
         sync: false
+
+  # -------------------------------------------------
+  # Frontend — Nuxt 3
+  # -------------------------------------------------
+  - type: web
+    name: kalapak-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    envVars:
+      - key: NUXT_PUBLIC_API_URL
+        sync: false
+      - key: NUXT_PUBLIC_SITE_URL
+        sync: false
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_BASE_URL
+        sync: false
+      - key: VITE_APP_ENV
+        value: production
+      - key: VITE_APP_NAME
+        value: Kalapak Team
+      - key: VITE_TURNSTILE_SITE_KEY
+        sync: false
+      - key: VITE_WITH_CREDENTIALS
+        value: "true"
