@@ -490,7 +490,6 @@ async function handleSubmit() {
   fd.append('is_founder', form.value.is_founder ? '1' : '0')
   fd.append('is_visible', form.value.is_visible ? '1' : '0')
   if (avatar.value) fd.append('avatar', avatar.value)
-  if (editingId.value) fd.append('_method', 'PUT')
 
   try {
     if (editingId.value) {

@@ -9,6 +9,7 @@ use App\Models\TeamMember;
 use App\Services\SupabaseStorage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class TeamMemberController extends Controller
 {
@@ -39,7 +40,7 @@ class TeamMemberController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
-            $data['avatar'] = app(SupabaseStorage::class)->upload($request->file('avatar'), 'team');
+            $data['avatar'] = $this->uploadAvatarOrFail($request);
         }
 
         $member = TeamMember::create($data);
@@ -75,7 +76,7 @@ class TeamMemberController extends Controller
             if ($member->avatar) {
                 app(SupabaseStorage::class)->delete($member->avatar);
             }
-            $data['avatar'] = app(SupabaseStorage::class)->upload($request->file('avatar'), 'team');
+            $data['avatar'] = $this->uploadAvatarOrFail($request);
         }
 
         $member->update($data);
@@ -104,5 +105,21 @@ class TeamMemberController extends Controller
             'success' => true,
             'message' => 'Team member removed successfully.',
         ]);
+    }
+
+    private function uploadAvatarOrFail(Request $request): string
+    {
+        try {
+            $path = app(SupabaseStorage::class)->upload($request->file('avatar'), 'team');
+            if ($path === false) {
+                throw new \RuntimeException('Supabase upload returned false.');
+            }
+            return $path;
+        } catch (\Throwable $e) {
+            report($e);
+            throw ValidationException::withMessages([
+                'avatar' => ['Could not upload image. Check Supabase env vars (SUPABASE_URL, bucket, secret key) on the server.'],
+            ]);
+        }
     }
 }

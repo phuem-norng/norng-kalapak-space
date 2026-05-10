@@ -168,6 +168,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/team', [TeamMemberController::class, 'index']);
         Route::post('/team', [TeamMemberController::class, 'store']);
         Route::put('/team/{id}', [TeamMemberController::class, 'update']);
+        Route::post('/team/{id}', [TeamMemberController::class, 'update']);
         Route::delete('/team/{id}', [TeamMemberController::class, 'destroy']);
 
         // Tags (admin + superadmin)

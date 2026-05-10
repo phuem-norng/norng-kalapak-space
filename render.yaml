@@ -10,8 +10,9 @@
 #
 # Required manual env vars:
 #   Backend APP_URL=https://<your-backend>.onrender.com
-#   Backend FRONTEND_URL=https://<your-frontend>.onrender.com
-#   Backend SANCTUM_STATEFUL_DOMAINS=<your-frontend>.onrender.com
+#   Backend FRONTEND_URL=https://<your-frontend-domain> (custom domain or *.onrender.com)
+#   Backend SANCTUM_STATEFUL_DOMAINS=<host only, no https://> — comma-separated if multiple
+#   Optional: CORS_ALLOWED_ORIGINS=https://<old>.onrender.com (comma-separated) if you need two front origins
 #   Backend DB_HOST/DB_DATABASE/DB_USERNAME/DB_PASSWORD from Neon
 #   Frontend NUXT_PUBLIC_API_URL=https://<your-backend>.onrender.com/api
 # =====================================================
